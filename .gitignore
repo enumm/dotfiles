@@ -1,0 +1,45 @@
+# Whitelist approach: ignore everything, then explicitly allow safe configs.
+/*
+!.gitignore
+!README.md
+
+# Window manager / desktop
+!hypr/
+!waybar/
+!wofi/
+!dunst/
+
+# Terminal / shell tools
+!ghostty/
+!btop/
+!htop/
+
+# Editors
+!zed/
+
+# GTK / Qt theming
+!gtk-3.0/
+!gtk-4.0/
+!Trolltech.conf
+
+# App configs (no secrets)
+!dolphinrc
+!arkrc
+!filetypesrc
+!kritarc
+!kritadisplayrc
+!pavucontrol.ini
+!mimeapps.list
+!electron-flags.conf
+
+# Personal scripts
+!scripts/
+
+# Within whitelisted dirs, still exclude caches / state / secrets
+**/cache/
+**/Cache/
+**/*.log
+**/*token*
+**/*secret*
+**/*.key
+**/*.pem

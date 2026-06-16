@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# notify — Dunst notifications for volume and brightness
+# Dependencies: wpctl, brightnessctl, dunstify, icon theme (e.g. Papirus)
+
+mode="$1"
+
+notifyAudio() {
+    output=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+    volume_raw=$(echo "$output" | awk '{print $2}')
+    volume=$(printf "%.0f" "$(echo "$volume_raw * 100" | bc -l)")
+    is_muted=$(echo "$output" | grep -q '\[MUTED\]' && echo 1 || echo 0)
+
+    if [ "$is_muted" -eq 1 ] || [ "$volume" -eq 0 ]; then
+        icon="audio-volume-muted-symbolic"
+        dunstify -h string:x-canonical-private-synchronous:audio "Muted" \
+            -h int:value:0 -t 1500 --icon "$icon"
+    elif [ "$volume" -le 30 ]; then
+        icon="audio-volume-low-symbolic"
+        dunstify -h string:x-canonical-private-synchronous:audio "Volume: ${volume}%" \
+            -h int:value:"$volume" -t 1500 --icon "$icon"
+    elif [ "$volume" -le 70 ]; then
+        icon="audio-volume-medium-symbolic"
+        dunstify -h string:x-canonical-private-synchronous:audio "Volume: ${volume}%" \
+            -h int:value:"$volume" -t 1500 --icon "$icon"
+    else
+        icon="audio-volume-high-symbolic"
+        dunstify -h string:x-canonical-private-synchronous:audio "Volume: ${volume}%" \
+            -h int:value:"$volume" -t 1500 --icon "$icon"
+    fi
+}
+
+notifyMicMute(){
+    dunstify -h string:x-canonical-private-synchronous:micMute "Microphone Muted/Unmuted"
+}
+
+notifyBrightness() {
+    brightness=$(brightnessctl -m | cut -d, -f4 | tr -d '%')
+
+    if [ "$brightness" -eq 0 ]; then
+        icon="display-brightness-off-symbolic"
+    elif [ "$brightness" -le 30 ]; then
+        icon="display-brightness-low-symbolic"
+    elif [ "$brightness" -le 70 ]; then
+        icon="display-brightness-medium-symbolic"
+    else
+        icon="display-brightness-high-symbolic"
+    fi
+
+    dunstify -h string:x-canonical-private-synchronous:brightness "Brightness: ${brightness}%" \
+        -h int:value:"$brightness" -t 1500 --icon "$icon"
+}
+
+case "$mode" in
+    audio)
+        notifyAudio
+        ;;
+    micMute)
+        notifyMicMute
+        ;;
+    brightness)
+        notifyBrightness
+        ;;
+    *)
+        echo "Usage: notify [audio|brightness]"
+        exit 1
+        ;;
+esac

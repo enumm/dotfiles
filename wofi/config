@@ -1,0 +1,6 @@
+show=drun
+allow-images=true
+image-size=24
+no_actions=true
+prompt=Search
+insensitive=true

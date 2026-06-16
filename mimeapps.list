@@ -1,0 +1,8 @@
+[Added Associations]
+application/zip=ark-2.desktop;ark.desktop;
+image/png=org.gnome.Loupe.desktop;
+
+[Default Applications]
+application/zip=ark-2.desktop;
+image/png=org.gnome.Loupe.desktop;
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
